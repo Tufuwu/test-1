@@ -1,37 +1,27 @@
-name: Python CI
+name: Build and test
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on:  # yamllint disable-line rule:truthy
+  - push
+  - pull_request
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        python-version: ['3.9', '3.10']
-
+        python-version: ["3.9", "3.10"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          sudo apt-get -qq update
-          sudo apt-get -qq install shellcheck
-          sudo apt-get -qq install libperl-critic-perl
-          sudo apt-get -qq install python-flake8
-          sudo apt-get -qq install flake8
+          python -m pip install --upgrade pip
+          pip install tox tox-gh-actions
 
-      - name: Run tests
-        run: make test
+      - name: Test with tox
+        run: tox

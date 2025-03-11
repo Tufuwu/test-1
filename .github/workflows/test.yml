@@ -1,32 +1,38 @@
-name: Unit tests
-on: [push, pull_request]
+name: CI
+
+on: [ push, pull_request ]
+
 jobs:
-  test:
+  CI:
+    name: "Linux x64 (Ubuntu 22.04) - Python ${{ matrix.python-version }}"
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python: ['3.9', '3.10']
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-      - name: Install dependencies
-        run: pip install tox codecov
-      - name: Run tests
-        run: tox
-      - name: Upload coverage
-        run: codecov
+        # Only test supported Python versions:
+        # https://endoflife.date/python
+        python-version: ["3.9", "3.10"]
 
-name: Docker image build test
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Docker
-        uses: docker/build-push-action@v2
-      - name: Set up Docker Compose
-        run: docker-compose build
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install libvips
+        run: sudo apt-get install --no-install-recommends libvips
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 .
+
+      - name: Install tox and any other packages
+        run: pip install tox
+
+      - name: Run tox
+        # Run tox using the version of Python in `PATH`
+        run: tox -e py

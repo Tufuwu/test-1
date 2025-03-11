@@ -1,26 +1,28 @@
-name: Run Unit Tests
+name: Tests
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
 
 jobs:
-  build:
+  run_tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@v3
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
-    
+        python-version: "3.9"
+        cache: "pip"
     - name: Install dependencies
       run: |
-        python3 -m pip install --upgrade pip
-        pip install -r requirements/dev .
-    
-    - name: Launch tests
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Ansible tests
       run: |
-        pytest --cov=checkQC --cov-report=xml tests/
-    
-    - name: Update data on codecov
-      uses: codecov/codecov-action@v3
+        cd ./tests/
+        python3 ./files/fake_api.py &
+        make

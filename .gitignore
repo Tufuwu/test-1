@@ -1,11 +1,6 @@
-*.swp
-*.pyc
-.idea/
-*.egg-info/
-build/
-dist/
-*.egg
-.python-env/
-.coverage
-.cache
-.vscode/
+*.tgz
+*.tar.gz
+osc
+ibs
+test.log
+misc

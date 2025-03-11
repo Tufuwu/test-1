@@ -1,36 +1,32 @@
-name: Tufuwu/test2
-on:
-  push:
-    branches:
-    - "**/*"
-  pull_request:
-#   # This item has no matching transformer
-#   maximum_number_of_builds: 0
+name: Unit tests
+on: [push, pull_request]
 jobs:
-  Unit_tests:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.9', '3.10']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: pip install tox codecov
+      - name: Run tests
+        run: tox
+      - name: Upload coverage
+        run: codecov
+
+name: Docker image build test
+on: [push, pull_request]
+jobs:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@v4.1.0
-    - uses: actions/setup-python@v5.0.0
-      with:
-        python-version: '3.9'
-#     # 'sudo' was not transformed because there is no suitable equivalent in GitHub Actions
-    - run: pip install tox-travis codecov
-    - run: tox
-    - run: codecov
-      if: "${{ success() }}"
-  Docker_image_build_test:
-    runs-on: ubuntu-latest
-    env:
-      TAG: temp
-    steps:
-    - name: checkout
-      uses: actions/checkout@v4.1.0
-#     # 'sudo' was not transformed because there is no suitable equivalent in GitHub Actions
-    - run: gem install bundler
-    - run: bundle install --jobs=3 --retry=3
-    - run: docker-compose build
-    services:
-#       # This item has no matching transformer
-#       docker:
+      - uses: actions/checkout@v2
+      - name: Set up Docker
+        uses: docker/build-push-action@v2
+      - name: Set up Docker Compose
+        run: docker-compose build

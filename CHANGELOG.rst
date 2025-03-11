@@ -1,210 +1,89 @@
-.. :changelog:
+#########
+Changelog
+#########
 
-History
--------
+Release 0.9.14
+--------------
 
+- Added the NODE_PACKAGE_MANAGER_INSTALL_OPTIONS setting
+- Declared compatibility with Python 3.12 and Django 5.0
+- Removed Django 3.2/4.1 versions support
 
-0.15.0 - current
----------------------
+Release 0.9.13
+--------------
 
-* new settings show_controls & xAxis_rotateLabel
-* add setting to add callback
+- Moved package configuration to pyproject.toml
+- Added feature to get path to npm executable automatically by using shutil.which function, thanks to `prplecake <https://github.com/prplecake>`_
+- Declared compatibility with Django 4.2
 
+Release 0.9.12
+--------------
 
-0.14.0 - (2015-12-09)
----------------------
+- Fixed a typo in README.rst, thanks to `proofit404 <https://github.com/proofit404>`_
+- Declared compatibility with Python 3.11 and Django 4.1
 
-* update project structure
-* remove setuptools from requirements
+Release 0.9.11
+--------------
 
+- Reformatted code with Black
+- Replaced subprocess.Popen by subprocess.check_output method to call npm install command
+- Replaced os, os.path, shutil module features by pathlib module features
+- Remove Python3.6 and Django 2.1/3.0/3.1 versions support, add Django 4.0 support
 
-0.13.8 - (2015-04-12)
----------------------
+Release 0.9.10
+--------------
 
-* fix scatterChart
+- Declared compatibility with Python 3.10
 
+Release 0.9.9
+-------------
 
-0.13.7 - (2015-04-06)
----------------------
+- Sorted imports by isort
+- Updated documentation
 
-* set format on x2Axis for focus
+Release 0.9.8
+-------------
 
+- Dropped Python 3.4, Python 3.5 and Django 2.0 support
+- Declared compatibility with Python 3.9 and Django 3.1
 
-0.13.6 - (2015-04-06)
----------------------
+Release 0.9.7
+-------------
 
-* add support for focusEnable
+- Fixed package.json copying
 
-* remove linePlusBarWithFocusChart as this is replaced by linePlusBarChart with option FocusEnable():
-  http://nvd3-community.github.io/nvd3/examples/documentation.html#linePlusBarChart
+Release 0.9.6
+-------------
 
-* Sourcing JS assets over https when appropriate
+- Added __init__.py files to management and management/commands directories to build distributive properly (issue https://github.com/pypa/setuptools/issues/97)
 
+Release 0.9.5
+-------------
 
-0.13.5 (2014-11-13)
--------------------
+- Stopped using symbolic link to copy package.json (issue https://github.com/whitespy/django-node-assets/issues/2)
 
-* Fix: color_list extra arguments is not mandatory on piechart
+Release 0.9.4
+-------------
 
+- Fixed NodeModulesFinder.find method
 
-0.13.0 (2014-08-04)
--------------------
+Release 0.9.3
+-------------
 
-* User Jinja2 to create the JS charts
+- Improved the npminstall management command
+- Changed imports order
 
+Release 0.9.2
+-------------
 
-0.11.0 (2013-10-09)
--------------------
+- Updated README.rst
 
-* allow chart_attr to be set as follow 'xAxis': '.rotateLabels(-25)'
-  this will turn into calling chart.xAxis.rotateLabels(-25)
+Release 0.9.1
+-------------
 
+- Supplemented README.rst
 
-0.11.0 (2013-10-09)
--------------------
+Release 0.9.0
+-------------
 
-* date setting is replaced by x_is_date
-* refactoring
-
-
-0.10.2 (2013-10-04)
--------------------
-
-* discreteBarChart support date on xAxis
-
-
-0.10.1 (2013-10-03)
--------------------
-
-* Remove $ sign in linePlusBarWithFocusChart
-
-
-0.10.0 (2013-10-02)
--------------------
-
-* Support new chart linePlusBarWithFocusChart
-
-
-0.9.0 (2013-09-30)
-------------------
-
-* Use Bower to install D3 and NVD3
-
-
-0.8.0 (2013-08-15)
-------------------
-
-* add NVD3Chart.buildcontent() by cmorgan (Chris Morgan)
-* Add show_labels parameter for Piechart by RaD (Ruslan Popov)
-
-
-0.7.0 (2013-07-09)
-------------------
-
-* Generalise the axis_formatting & add support for hiding the legend by nzjrs (John Stowers)
-* Fix #7 from DanMeakin, wrong str conversion of x-axis dates
-
-
-0.6.0 (2013-06-05)
-------------------
-
-* Add AM_PM function for x-axis on lineChart
-
-
-0.5.2 (2013-05-31)
-------------------
-
-* ScatterChat option to pass 'size': '10' as argument of the series
-* Fix in setup.py for python3
-
-
-0.5.1 (2013-05-30)
-------------------
-
-* Fix multiChart with date
-
-
-0.5.0 (2013-05-28)
-------------------
-
-* Add color_list option on piechart
-
-
-0.4.1 (2013-05-06)
-------------------
-
-* Fix removed forced sorted on x-axis
-
-
-0.4.0 (2013-04-28)
-------------------
-
-* Add support for Python3
-
-
-0.3.6 (2013-04-24)
-------------------
-
-* Add custom dateformat var for tooltip
-
-
-0.3.5 (2013-04-23)
-------------------
-
-* Fix style
-
-
-0.3.4 (2013-04-23)
-------------------
-
-* Support for px and % on height and width
-* Add tag_script_js property to disable tag <script>
-
-
-0.3.3 (2013-04-23)
-------------------
-
-* Data series it now in javascript format
-
-
-0.3.2 (2013-04-22)
-------------------
-
-* Fix lineChart tooltip
-
-
-0.3.1 (2013-04-19)
-------------------
-
-* Option to change the color schemes
-* Set a specific color per serie
-
-
-0.3 (2013-04-19)
-----------------
-
-* Add tooltip support
-* Mix enhancement of APIs
-
-
-0.2 (2013-04-16)
-----------------
-
-* Proper project release including support for the following chart:
-
-    lineWithFocusChart
-    lineChart
-    multiBarChart
-    pieChart
-    stackedAreaChart
-    multiBarHorizontalChart
-    linePlusBarChart
-    cumulativeLineChart
-    discreteBarChart
-    scatterChart
-
-
-0.1 (2013-04-08)
-----------------
-
-* First release
+- Initial release

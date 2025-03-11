@@ -1,161 +1,128 @@
-Python Wrapper for NVD3 - It's time for beautiful charts
-========================================================
+##################
+Django-node-assets
+##################
 
-:Description: Python-nvd3 is a wrapper for NVD3 graph library
-:NVD3: NVD3 http://nvd3.org/
-:D3: Data-Driven Documents http://d3js.org/
-:Maintainers: Areski_ & Oz_
-:Contributors: `list of contributors <https://github.com/areski/python-nvd3/graphs/contributors>`_
+.. image:: https://badge.fury.io/py/django-node-assets.svg
+    :target: https://badge.fury.io/py/django-node-assets
 
-.. _Areski: https://github.com/areski/
-.. _Oz: https://github.com/oz123/
+.. image:: https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336
+    :target: https://pycqa.github.io/isort/
 
-.. image:: https://coveralls.io/repos/areski/python-nvd3/badge.png?branch=develop
-  :target: https://coveralls.io/r/areski/python-nvd3?branch=develop
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
 
-.. image:: https://img.shields.io/pypi/v/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Latest Version
+.. image:: https://github.com/whitespy/django-node-assets/actions/workflows/code_quality_check.yml/badge.svg
+    :target: https://github.com/whitespy/django-node-assets/actions/workflows/code_quality_check.yml
 
-.. image:: https://img.shields.io/pypi/dm/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Downloads
+|
 
-.. image:: https://img.shields.io/pypi/pyversions/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: Supported Python versions
+The Django application that allows to install and to serve static assets via Node.js package manager infrastructure.
+The application exposes management command to install dependencies from your **package.json** and several static files
+finders to find files from installed node packages and exclude metadata of node packages and unwanted files when
+static files will be collected via Django`s **collectstatic** management command execution.
 
-.. image:: https://img.shields.io/pypi/l/python-nvd3.svg
-  :target: https://pypi.python.org/pypi/python-nvd3/
-  :alt: License
+Features
+--------
 
-NVD3 is an attempt to build re-usable charts and chart components
-for d3.js without taking away the power that d3.js offers you.
-
-Python-NVD3 makes your life easy! You write Python and the library
-renders JavaScript for you!
-These graphs can be part of your web application:
-
- .. image:: https://raw.githubusercontent.com/areski/python-nvd3/develop/docs/showcase/multiple-charts.png
-
-
-Want to try it yourself? Install python-nvd3, enter your python shell and try this quick demo::
-
-    >>> from nvd3 import pieChart
-    >>> chart_name = 'pieChart'
-    >>> chart = pieChart(name=chart_name, color_category='category20c', height=450, width=450)
-    >>> xdata = ["Orange", "Banana", "Pear", "Kiwi", "Apple", "Strawberry", "Pineapple"]
-    >>> ydata = [3, 4, 0, 1, 5, 7, 3]
-    >>> extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
-    >>> chart.add_serie(y=ydata, x=xdata, extra=extra_serie)
-    >>> chart.buildcontent()
-    >>> print chart.htmlcontent
-
-
-This will output the following HTML to render a live chart. The HTML could be
-stored into a HTML file, used in a Web application, or even used via Ipython Notebook::
-
-    <div id="pieChart"><svg style="width:450px;height:450px;"></svg></div>
-    <script>
-    data_pieChart=[{"values": [{"value": 3, "label": "Orange"},
-                   {"value": 4, "label": "Banana"},
-                   {"value": 0, "label": "Pear"},
-                   {"value": 1, "label": "Kiwi"},
-                   {"value": 5, "label": "Apple"},
-                   {"value": 7, "label": "Strawberry"},
-                   {"value": 3, "label": "Pineapple"}], "key": "Serie 1"}];
-
-    nv.addGraph(function() {
-        var chart = nv.models.pieChart();
-        chart.margin({top: 30, right: 60, bottom: 20, left: 60});
-        var datum = data_pieChart[0].values;
-                chart.tooltipContent(function(key, y, e, graph) {
-                    var x = String(key);
-                    var y =  String(y)  + ' cal';
-                    tooltip_str = '<center><b>'+x+'</b></center>' + y;
-                    return tooltip_str;
-                });
-            chart.showLegend(true);
-            chart.showLabels(true);
-            chart.donut(false);
-        chart
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value });
-        chart.width(450);
-        chart.height(450);
-        d3.select('#pieChart svg')
-            .datum(datum)
-            .transition().duration(500)
-            .attr('width', 450)
-            .attr('height', 450)
-            .call(chart);
-    });
-    </script>
-
-
-Documentation
--------------
-
-Check out the documentation on `Read the Docs`_ for some live Chart examples!
-
-.. _Read the Docs: http://python-nvd3.readthedocs.org
-
+- Avoiding vendoring static assets in your repository like jQuery plugins, Bootstrap toolkit, etc
+- Avoiding mess in **STATIC_ROOT** through exclusion node packages` metatadata and unwanted files
+- Installing dependencies by Django`s management command
 
 Installation
 ------------
 
-Install, upgrade and uninstall python-nvd3 with these commands::
+.. code:: bash
 
-    $ pip install python-nvd3
-    $ pip install --upgrade python-nvd3
-    $ pip uninstall python-nvd3
+    $ pip install django-node-assets
 
+Configuration
+-------------
 
-Dependencies
-------------
+Add 'django_node_assets' to your INSTALLED_APPS:
 
-D3 and NvD3 can be installed through bower (which itself can be installed through npm).
-See http://bower.io/ and https://npmjs.org for further information.
-To install bower globally execute::
+.. code:: python
 
-    $ npm install -g bower
+    INSTALLED_APPS = [
+        ...
+        'django_node_assets',
+    ]
 
-Note : you might prefer to save your npm dependencies locally in a ``package.json`` file.
+Add NodeModulesFinder to STATICFILES_FINDERS:
 
-Then in the directory where you will use python-nvd3, just execute the following commands::
+.. code:: python
 
-    $ bower install d3#3.5.17
-    $ bower install nvd3#1.8.6
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        'django_node_assets.finders.NodeModulesFinder',
+    ]
 
-This will create a directory "bower_components" where d3 & nvd3 will be saved.
+Specify absolute path to the package.json file:
 
-Note : you might prefer to save your bower dependencies locally in a ``bower.json`` file.
-You can also configure the directory where your bower dependencies will be
-saved adding a ``.bowerrc`` file in your project root directory.
+.. code:: python
 
+    NODE_PACKAGE_JSON = '/var/assets/package.json'
 
-Django Wrapper
---------------
+.. note::
 
-There is also a django wrapper for nvd3 available:
-https://github.com/areski/django-nvd3
+    A package.json must have the "dependencies" section and look like:
 
+    .. code:: json
 
-IPython Notebooks
------------------
+        {
+            "dependencies": {
+                "jquery": "^3.2.1",
+                "bootstrap": "^3.3.5",
+            }
+        }
 
-Python-NVD3 works nicely within IPython Notebooks (thanks to @jdavidheiser)
-
-See the examples directory for an Ipython notebook with python-nvd3.
-
-
-License
--------
-
-Python-nvd3 is licensed under MIT, see `MIT-LICENSE.txt`.
+    Details here: https://docs.npmjs.com/files/package.json#dependencies
 
 
-Maintainers
------------
+Specify the absolute path to a directory where the **npminstall** management command will install assets:
 
-If you want to help maintain this project, please get in touch.
+.. code:: python
+
+    NODE_MODULES_ROOT = '/var/assets/node_modules'
+
+.. note::
+
+    A base dir must be called **node_modules**.
+
+Override path to the node package manager executable (optional)
+
+.. code:: python
+
+    NODE_PACKAGE_MANAGER_EXECUTABLE = '/usr/local/bin/npm'
+
+.. note::
+
+    The node package manager must be already installed in your system.
+
+Override options of the node package manager install command (optional)
+
+.. code:: python
+
+    NODE_PACKAGE_MANAGER_INSTALL_OPTIONS = ['--dry-run']
+
+Defaults to **--no-package-lock**, **--production**.
+
+Usage
+-----
+
+Call the **npminstall** management command to install dependencies specified in the package.json
+
+.. code:: bash
+
+    $ python manage.py npminstall
+
+Use Django`s static template tag to link installed assets
+
+.. code:: html
+
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+    <!-- Some amazing markup -->
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.js' %}"></script>

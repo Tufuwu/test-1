@@ -1,27 +1,22 @@
-.PHONY: docs release clean build install test
+.PHONY: check-code fix-code build-dist check-dist upload-dist clean
 
-test: buildenv install
-	. nvd3_env/bin/activate; python setup.py test
+check-code:
+	@python -m flake8 django_node_assets
+	@python -m isort django_node_assets --check
+	@python -m black django_node_assets --check
 
-buildenv:
-	virtualenv nvd3_env
-	. nvd3_env/bin/activate; pip install -Ur requirements.txt
+fix-code:
+	@python -m isort django_node_assets
+	@python -m black django_node_assets
 
-# assume that the developer already works with virtualenv
-# or virtualenv-wrapper
-install:
-	. nvd3_env/bin/activate; python setup.py install
+build-dist: clean
+	@python -m build
 
-coverage: install
-	coverage run --source=nvd3 setup.py test
-	coverage report
-	coverage html
+check-dist:
+	@python -m twine check dist/*
 
-docs: buildenv
-	$(MAKE) -C docs;
+upload-dist:
+	@python -m twine upload dist/*
 
 clean:
-	rm -rf nvd3_env htmlcov
-
-cleanall: clean
-	$(MAKE) -C docs clean
+	@rm -rf dist/ django_node_assets.egg-info/
